@@ -17,6 +17,7 @@ class Game():
         self.vaisseauposition = [0,0]
         self.vitesse = [0,0]
         self.acceleration = [0,0]
+        self.proportion = 0.2  #Défini la vitesse supplementaire normalisée
 
     def loadmap(self):
         #Charge la map du jeu
@@ -28,11 +29,22 @@ class Game():
         self.action = "r"
         #Capte les évènements claviers
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 #la touche avancer a été appuyer
                 self.action = "z"
-                self.play = True
                 print("Z")
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                #la touche avancer a été appuyer
+                self.action = "s"
+                print("S")
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                #la touche avancer a été appuyer
+                self.action = "d"
+                print("D")
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                #la touche avancer a été appuyer
+                self.action = "q"
+                print("Q")
             if event.type == pygame.QUIT:
                 #quitte le jeu
                 self.play = False
@@ -42,10 +54,39 @@ class Game():
     # Calcule les positions et les colisions
 
 
+        #Commande pour faire varier la vitesse
         if self.action == "z" :
-            self.vitesse[0]+=1
+            self.vitesse[1]-= self.proportion
+        elif self.action == "s" :
+            self.vitesse[1]+= self.proportion
+        elif self.action == "d" :
+            self.vitesse[0]+= self.proportion
+        elif self.action == "q" :
+            self.vitesse[0]-= self.proportion
 
+        #Prise en compte de la gravité s'il on ne touche pas le sol
+        if self.vaisseauposition[1] < 559 :
+            self.vitesse[1] += 0.001
+        #Influence de la vitesse sur le changement de position
         self.vaisseauposition[0] += self.vitesse[0]
+        self.vaisseauposition[1] += self.vitesse[1]
+
+
+        #Cas des collisions avec les bords de la map
+        #collisions cotés
+        if self.vaisseauposition[0] > 800:
+            self.vaisseauposition[0] = 0
+        if self.vaisseauposition[0] < 0:
+            self.vaisseauposition[0] = 800
+        #collisions bas haut
+        if self.vaisseauposition[1] > 560 :
+            self.vaisseauposition[1]= 560
+            self.vitesse[1] = -0.5*self.vitesse[1]
+        if self.vaisseauposition[1] < 0 :
+            self.vaisseauposition[1] = 0
+            self.vitesse[1] = 0
+
+
 
     def write(self):
         #Affiche à l'écran les différents objets ayant changer de positions
@@ -67,3 +108,4 @@ class Game():
             self.events()
             self.calc()
             self.write()
+
