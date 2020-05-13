@@ -3,7 +3,6 @@
 import pygame
 global name
 name = "RocketMan" #la variable du nom du jeu
-from poto import *
 
 class Game():
     #la classe qui contient toute le fonctions et variables du jeu
@@ -18,12 +17,7 @@ class Game():
         self.vaisseauposition = [0,0]
         self.vitesse = [0,0]
         self.acceleration = [0,0]
-        self.nombrepoto = 16
         self.proportion = 0.2  #Défini la vitesse supplementaire normalisée
-
-        self.potos = [Poto]*self.nombrepoto
-        for k in range(self.nombrepoto):
-            self.potos[k] = Poto()
 
     def loadmap(self):
         #Charge la map du jeu
@@ -31,9 +25,6 @@ class Game():
         self.fond = pygame.image.load("textures/fond.png").convert()
         self.vaisseautexture = pygame.image.load("textures/fusée.png").convert_alpha()
         self.vaisseautexture = pygame.transform.scale(self.vaisseautexture, (40,40))
-
-        for k in range(self.nombrepoto):
-            self.potos[k].x=800 + 50*k
     def events(self):
         self.action = "r"
         #Capte les évènements claviers
@@ -58,6 +49,7 @@ class Game():
                 #quitte le jeu
                 self.play = False
                 print("Aurevoir")
+
     def calc(self):
     # Calcule les positions et les colisions
 
@@ -93,22 +85,19 @@ class Game():
         if self.vaisseauposition[1] < 0 :
             self.vaisseauposition[1] = 0
             self.vitesse[1] = 0
-        for k in range(self.nombrepoto):
-            self.potos[k].calc()
+
 
 
     def write(self):
         #Affiche à l'écran les différents objets ayant changer de positions
         self.window.blit(self.fond, (0,0))
         self.window.blit(self.vaisseautexture, (self.vaisseauposition[0], self.vaisseauposition[1]))
-        for k in range(self.nombrepoto):
-            self.window.blit(self.potos[k].texture, (self.potos[k].x, self.potos[k].y))
-
 
 
         pygame.display.flip()
     ##def win(self):        Le joueur a gagné
     ##def lose(self):       Le joueur a perdu
+
     def loop(self):
 
         #La boucle de jeu qui lance events, calc et write en boucle et qui se charge de la synchronisation
@@ -119,3 +108,4 @@ class Game():
             self.events()
             self.calc()
             self.write()
+
