@@ -11,6 +11,7 @@ else:
     #lance le jeu
     print("lancement de", name)
     jeu = Game()
+    jeu.loop()
 
 print("fermeture de pygame")
 pygame.quit()
