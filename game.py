@@ -20,12 +20,15 @@ class Game():
 
     #def loadmap(self):    Charge la map du jeu
     def events(self):
-        self.action = "z"
+        self.action = "r"
         #Capte les évènements claviers
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 #quitte le jeu
                 self.play = False
+            if event.type == pygame.K_z:
+                #la touche avancer a été appuyer
+                self.action = "z"
     def calc(self):
     # Calcule les positions et les colisions
 
