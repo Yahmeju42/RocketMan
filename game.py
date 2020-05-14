@@ -15,11 +15,13 @@ class Game():
         pygame.display.set_caption(name) #défini le nom de la fenêtre
         icon = pygame.image.load("textures/icon.png").convert() #charge l'icon de la fenêtre
         pygame.display.set_icon(icon) #défini l'icon de la fenêtre
-        self.vaisseauposition = [0,0]
+        self.vaisseauposition = [150,0]
         self.vitesse = [0,0]
         self.acceleration = [0,0]
-        self.nombrepoto = 16
-        self.proportion = 0.2  #Défini la vitesse supplementaire normalisée
+        self.nombrepoto = 16 #Defini le nombre de potos total à l'écran
+        self.proportion = 0.7  #Défini la vitesse supplementaire à donner au vaisseau à chaque poussée
+        self.score = 0  #Initialisation du score du jour à 0
+        self.gravite = 0.002
 
         self.potos = [Poto]*self.nombrepoto
         for k in range(self.nombrepoto):
@@ -32,8 +34,8 @@ class Game():
         self.vaisseautexture = pygame.image.load("textures/fusée.png").convert_alpha()
         self.vaisseautexture = pygame.transform.scale(self.vaisseautexture, (40,40))
 
-        for k in range(self.nombrepoto):
-            self.potos[k].x=800 + 50*k
+        for k in range(self.nombrepoto): #Placement des potos initiaux
+            self.potos[k].x = 800 + 50*k
     def events(self):
         self.action = "r"
         #Capte les évènements claviers
@@ -41,19 +43,19 @@ class Game():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 #la touche avancer a été appuyer
                 self.action = "z"
-                print("Z")
+                print("haut")
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
                 #la touche avancer a été appuyer
                 self.action = "s"
-                print("S")
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                print("bas")
+           # elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                 #la touche avancer a été appuyer
-                self.action = "d"
-                print("D")
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                #self.action = "d"
+                #print("droite")
+           # elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
                 #la touche avancer a été appuyer
-                self.action = "q"
-                print("Q")
+            #    self.action = "q"
+             #   print("gauche")
             if event.type == pygame.QUIT:
                 #quitte le jeu
                 self.play = False
@@ -74,7 +76,7 @@ class Game():
 
         #Prise en compte de la gravité s'il on ne touche pas le sol
         if self.vaisseauposition[1] < 559 :
-            self.vitesse[1] += 0.001
+            self.vitesse[1] += self.gravite
         #Influence de la vitesse sur le changement de position
         self.vaisseauposition[0] += self.vitesse[0]
         self.vaisseauposition[1] += self.vitesse[1]
@@ -95,6 +97,17 @@ class Game():
             self.vitesse[1] = 0
         for k in range(self.nombrepoto):
             self.potos[k].calc()
+             #Collision Vaisseau potos
+            if abs(self.vaisseauposition[0]-self.potos[k].x) < 10 and self.potos[k].etat :
+                if self.potos[k].y > self.vaisseauposition[1] : #Si on est en dessous du poto
+                    self.score += 1
+                else :
+                    self.score = 0
+                print(self.score)
+                self.potos[k].etat = False
+        #Collision Vaisseau potos
+
+
 
 
     def write(self):
